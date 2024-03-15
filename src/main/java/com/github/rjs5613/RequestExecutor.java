@@ -19,15 +19,15 @@ public class RequestExecutor {
         channel.read(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
-                if (handleEmpty(result)) return;
-                HttpRequest request = new HttpRequest(buffer);
                 ResponseEntity<?> responseEntity;
                 try {
+                    if (handleEmpty(result)) return;
+                    HttpRequest request = new HttpRequest(buffer);
                     Function<HttpRequest, ResponseEntity<?>> handler = RequestHandlerRegistry.instance().handlerFor(request);
                     responseEntity = handler.apply(request);
                 } catch (Exception e) {
                     if (e instanceof HttpError error) {
-                        responseEntity = new ResponseEntity<>(error.getMessage(), error.status());
+                        responseEntity = new ResponseEntity<>(error.message(), error.status());
                     } else {
                         responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                     }

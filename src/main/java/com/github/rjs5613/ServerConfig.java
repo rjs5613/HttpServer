@@ -1,4 +1,5 @@
 package com.github.rjs5613;
 
-public class ServerConfig {
+public record ServerConfig(int port) {
+
 }

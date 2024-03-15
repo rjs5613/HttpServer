@@ -9,18 +9,18 @@ import java.util.function.Function;
 
 public class AsyncHttpServer {
 
-    private final ServerConfig serverConfig;
+    private final ServerConfig config;
 
-    public AsyncHttpServer(ServerConfig serverConfig) {
-        this.serverConfig = serverConfig;
+    public AsyncHttpServer(ServerConfig config) {
+        this.config = config;
     }
 
     public void start() throws InterruptedException, IOException {
-        AsynchronousServerSocketChannel listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(8080));
-        listener.accept(null, new CompletionHandler<>() {
+        AsynchronousServerSocketChannel asyncServer = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(config.port()));
+        asyncServer.accept(null, new CompletionHandler<>() {
             @Override
             public void completed(AsynchronousSocketChannel channel, Object attachment) {
-                listener.accept(null, this);
+                asyncServer.accept(null, this);
                 new RequestExecutor(channel).execute();
             }
 

@@ -16,7 +16,7 @@ public class HttpResponse {
 
     public void send() {
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        String response = createHttpResponse();
+        String response = responseEntity.asString();
         channel.write(ByteBuffer.wrap(response.getBytes()), null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
@@ -33,15 +33,5 @@ public class HttpResponse {
                 exc.printStackTrace();
             }
         });
-    }
-
-    private String createHttpResponse() {
-        HttpStatus httpStatus = responseEntity.status();
-        String response = responseEntity.body().toString();
-        return "HTTP/1.1 " + httpStatus.getString() + "\r\n"
-                + "Content-Type: text/plain\r\n"
-                + "Server: MyAsyncHttpServer:1.0\r\n"
-                + "\r\n"
-                + response + "\r\n";
     }
 }

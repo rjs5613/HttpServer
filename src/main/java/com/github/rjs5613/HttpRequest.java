@@ -1,43 +1,67 @@
 package com.github.rjs5613;
 
 import java.nio.ByteBuffer;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class HttpRequest {
 
     private final HttpMethod httpMethod;
-
-    private final Set<HttpHeaders> headers;
+    private final Map<HttpHeader, List<String>> headers;
     private final String path;
+    private final Map<String, String> queryMap;
     private String body;
 
     public HttpRequest(HttpMethod httpMethod, String path) {
         this.httpMethod = httpMethod;
         this.path = path;
-        this.headers = new HashSet<>();
+        this.headers = new HashMap<>();
+        this.queryMap = new HashMap<>();
     }
 
     public HttpRequest(ByteBuffer buffer) {
-
         buffer.flip();
         byte[] data = new byte[buffer.limit()];
         buffer.get(data);
         String requestText = new String(data);
         String[] lines = requestText.split("\r\n");
-        String line1 = lines[0];
-        String[] split = line1.split(" ");
-        headers = new HashSet<>();
+
+        String[] split = lines[0].split(" ");
         this.httpMethod = HttpMethod.valueOf(split[0].toUpperCase());
-        this.path = split[1];
-        for (int i = 1; i < lines.length; i++) {
-            if (lines[i].trim().isEmpty()) {
-                this.body = lines[i + 1];
+        String pathString = split[1];
+        String[] pathSplit = pathString.split("\\?");
+        this.path = pathSplit[0];
+        this.queryMap = new HashMap<>();
+        if (pathSplit.length > 1) {
+            updateQueryMap(pathSplit[1]);
+        }
+
+        this.headers = new HashMap<>();
+
+        parseHeadersAndBody(Arrays.copyOfRange(lines, 1, lines.length));
+    }
+
+    private void parseHeadersAndBody(String[] lines) {
+        boolean foundEmptyLine = false;
+        for (String line : lines) {
+            if (line.trim().isEmpty()) {
+                foundEmptyLine = true;
+                continue;
+            }
+
+            if (foundEmptyLine) {
+                this.body = line;
                 break;
             }
-            headers.add(HttpHeaders.from(lines[i]));
+
+            HttpHeader header = HttpHeader.from(line);
+            this.headers.computeIfAbsent(header, k -> new ArrayList<>()).addAll(header.getValues());
         }
+    }
+
+    private void updateQueryMap(String queryString) {
+        Arrays.stream(queryString.split("&"))
+                .map(entry -> entry.trim().split("="))
+                .forEach(split -> this.queryMap.put(split[0], split[1]));
     }
 
     public HttpMethod getHttpMethod() {
@@ -50,6 +74,14 @@ public class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+    public Set<HttpHeader> getHeaders() {
+        return Collections.unmodifiableSet(headers.keySet());
+    }
+
+    public Map<String, String> getQueryMap() {
+        return Collections.unmodifiableMap(queryMap);
     }
 
     @Override
@@ -75,3 +107,5 @@ public class HttpRequest {
         return Objects.hash(httpMethod, path);
     }
 }
+
+

@@ -8,4 +8,8 @@ public abstract class HttpError extends RuntimeException {
 
     public abstract HttpStatus status();
 
+    public String message() {
+        return getMessage();
+    }
+
 }
