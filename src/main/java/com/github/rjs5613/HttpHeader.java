@@ -25,11 +25,11 @@ public class HttpHeader {
         return new HttpHeader(name, Set.of(value));
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public Set<String> getValues() {
+    public Set<String> values() {
         return values;
     }
 

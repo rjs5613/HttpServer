@@ -47,7 +47,7 @@ public class ResponseEntity<T> {
                         .append(status.getString())
                         .append("\n");
         headers.forEach(
-                (header) -> finalResponse.append(header.getName()).append(": ").append(String.join("", header.getValues())).append("\n"));
+                (header) -> finalResponse.append(header.name()).append(": ").append(String.join("", header.values())).append("\n"));
         finalResponse.append("\r\n");
         finalResponse.append(body);
         return finalResponse.toString();

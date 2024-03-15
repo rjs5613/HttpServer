@@ -54,7 +54,7 @@ public class HttpRequest {
             }
 
             HttpHeader header = HttpHeader.from(line);
-            this.headers.computeIfAbsent(header, k -> new ArrayList<>()).addAll(header.getValues());
+            this.headers.computeIfAbsent(header, k -> new ArrayList<>()).addAll(header.values());
         }
     }
 
@@ -64,23 +64,23 @@ public class HttpRequest {
                 .forEach(split -> this.queryMap.put(split[0], split[1]));
     }
 
-    public HttpMethod getHttpMethod() {
+    public HttpMethod httpMethods() {
         return httpMethod;
     }
 
-    public String getPath() {
+    public String path() {
         return path;
     }
 
-    public String getBody() {
+    public String body() {
         return body;
     }
 
-    public Set<HttpHeader> getHeaders() {
+    public Set<HttpHeader> headers() {
         return Collections.unmodifiableSet(headers.keySet());
     }
 
-    public Map<String, String> getQueryMap() {
+    public Map<String, String> queryMap() {
         return Collections.unmodifiableMap(queryMap);
     }
 
