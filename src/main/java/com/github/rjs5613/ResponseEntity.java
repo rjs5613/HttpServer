@@ -1,8 +1,5 @@
 package com.github.rjs5613;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class ResponseEntity<T> {
 
     private final T body;

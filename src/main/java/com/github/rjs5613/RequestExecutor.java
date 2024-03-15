@@ -26,7 +26,6 @@ public class RequestExecutor {
                     Function<HttpRequest, ResponseEntity<?>> handler = RequestHandlerRegistry.instance().handlerFor(request);
                     responseEntity = handler.apply(request);
                 } catch (Exception e) {
-                    ResponseEntity<String> response;
                     if (e instanceof HttpError error) {
                         responseEntity = new ResponseEntity<>(error.getMessage(), error.status());
                     } else {

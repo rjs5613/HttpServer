@@ -1,7 +1,7 @@
 package com.github.rjs5613;
 
-public class NotFoundException extends HttpError {
-    public NotFoundException(String message) {
+public class NotFoundError extends HttpError {
+    public NotFoundError(String message) {
         super(message);
     }
 

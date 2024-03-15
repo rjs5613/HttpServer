@@ -15,21 +15,21 @@ public class RequestHandlerRegistry {
         this.requestHandlers = new ConcurrentHashMap<>();
     }
 
+    public static RequestHandlerRegistry instance() {
+        return INSTANCE;
+    }
+
     public void register(HttpRequest request, Function<HttpRequest, ResponseEntity<?>> handler) {
         if (Objects.nonNull(request) && Objects.nonNull(handler)) {
             requestHandlers.put(request, handler);
         }
     }
 
-    public Function<HttpRequest, ResponseEntity<?>> handlerFor(HttpRequest request) throws NotFoundException {
+    public Function<HttpRequest, ResponseEntity<?>> handlerFor(HttpRequest request) throws NotFoundError {
         if (requestHandlers.containsKey(request)) {
             return requestHandlers.get(request);
         }
-        throw new NotFoundException("No Handler Registered!!");
-    }
-
-    public static RequestHandlerRegistry instance() {
-        return INSTANCE;
+        throw new NotFoundError("No Handler Registered!!");
     }
 
 }
