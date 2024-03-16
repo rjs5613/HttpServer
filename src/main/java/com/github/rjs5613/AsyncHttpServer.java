@@ -10,9 +10,11 @@ import java.util.function.Function;
 public class AsyncHttpServer {
 
     private final ServerConfig config;
+    private final RequestHandlerRegistry registry;
 
-    public AsyncHttpServer(ServerConfig config) {
+    public AsyncHttpServer(ServerConfig config, RequestHandlerRegistry registry) {
         this.config = config;
+        this.registry = registry;
     }
 
     public void start() throws InterruptedException, IOException {
@@ -21,7 +23,7 @@ public class AsyncHttpServer {
             @Override
             public void completed(AsynchronousSocketChannel channel, Object attachment) {
                 asyncServer.accept(null, this);
-                new RequestExecutor(channel).execute();
+                new RequestExecutor(channel, registry).execute();
             }
 
             @Override
@@ -34,6 +36,6 @@ public class AsyncHttpServer {
     }
 
     public void register(String path, HttpMethod httpMethod, Function<HttpRequest, ResponseEntity<?>> requestHandler) {
-        RequestHandlerRegistry.instance().register(new HttpRequest(httpMethod, path), requestHandler);
+        registry.register(new HttpRequest(httpMethod, path), requestHandler);
     }
 }

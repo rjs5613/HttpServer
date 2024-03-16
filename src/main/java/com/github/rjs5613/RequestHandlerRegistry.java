@@ -7,16 +7,11 @@ import java.util.function.Function;
 
 public class RequestHandlerRegistry {
 
-    private static final RequestHandlerRegistry INSTANCE = new RequestHandlerRegistry();
 
     private final Map<HttpRequest, Function<HttpRequest, ResponseEntity<?>>> requestHandlers;
 
-    private RequestHandlerRegistry() {
+    public RequestHandlerRegistry() {
         this.requestHandlers = new ConcurrentHashMap<>();
-    }
-
-    public static RequestHandlerRegistry instance() {
-        return INSTANCE;
     }
 
     public void register(HttpRequest request, Function<HttpRequest, ResponseEntity<?>> handler) {

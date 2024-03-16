@@ -9,9 +9,11 @@ import java.util.function.Function;
 public class RequestExecutor {
 
     private final AsynchronousSocketChannel channel;
+    private final RequestHandlerRegistry registry;
 
-    public RequestExecutor(AsynchronousSocketChannel channel) {
+    public RequestExecutor(AsynchronousSocketChannel channel, RequestHandlerRegistry registry) {
         this.channel = channel;
+        this.registry = registry;
     }
 
     public void execute() {
@@ -21,9 +23,12 @@ public class RequestExecutor {
             public void completed(Integer result, Object attachment) {
                 ResponseEntity<?> responseEntity;
                 try {
+
                     if (handleEmpty(result)) return;
                     HttpRequest request = new HttpRequest(buffer);
-                    Function<HttpRequest, ResponseEntity<?>> handler = RequestHandlerRegistry.instance().handlerFor(request);
+                    System.out.println(request);
+                    Thread.sleep(10000);
+                    Function<HttpRequest, ResponseEntity<?>> handler = registry.handlerFor(request);
                     responseEntity = handler.apply(request);
                 } catch (Exception e) {
                     if (e instanceof HttpError error) {

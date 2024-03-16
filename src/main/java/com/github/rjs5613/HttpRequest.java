@@ -86,9 +86,9 @@ public class HttpRequest {
 
     @Override
     public String toString() {
-        return "HttpRequest{" +
+        return "{" +
                 "httpMethod=" + httpMethod +
-                ", headers=" + headers +
+                ", headers=" + headers() +
                 ", path='" + path + '\'' +
                 ", body='" + body + '\'' +
                 '}';

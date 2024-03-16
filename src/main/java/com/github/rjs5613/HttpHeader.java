@@ -35,7 +35,7 @@ public class HttpHeader {
 
     @Override
     public String toString() {
-        return "HttpHeaders{" +
+        return "{" +
                 "name='" + name + '\'' +
                 ", values=" + values +
                 '}';
