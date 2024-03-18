@@ -34,7 +34,6 @@ public class AsyncHttpServer {
                 exc.printStackTrace();
             }
         });
-
         Thread.currentThread().join();
     }
 

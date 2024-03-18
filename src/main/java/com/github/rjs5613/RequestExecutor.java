@@ -24,7 +24,7 @@ public class RequestExecutor implements Runnable {
         channel.read(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
-                executorService.execute(new RequestWorker(buffer, result));
+                executorService.execute(new RequestWorker(channel, registry, buffer, result));
             }
 
             @Override
@@ -35,14 +35,18 @@ public class RequestExecutor implements Runnable {
         });
     }
 
-    public class RequestWorker implements Runnable {
+    public static class RequestWorker implements Runnable {
 
         private final ByteBuffer buffer;
         private final Integer result;
+        private final RequestHandlerRegistry registry;
+        private final AsynchronousSocketChannel channel;
 
-        public RequestWorker(ByteBuffer buffer, Integer result) {
+        public RequestWorker(AsynchronousSocketChannel channel, RequestHandlerRegistry registry, ByteBuffer buffer, Integer result) {
             this.buffer = buffer;
             this.result = result;
+            this.registry = registry;
+            this.channel = channel;
         }
 
         @Override
