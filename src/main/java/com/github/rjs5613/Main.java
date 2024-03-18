@@ -1,12 +1,13 @@
 package com.github.rjs5613;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
 
 public class Main {
     public static void main(String[] args) {
         try {
             ServerConfig config = new ServerConfig(8080);
-            AsyncHttpServer httpServer = new AsyncHttpServer(config, new RequestHandlerRegistry());
+            AsyncHttpServer httpServer = new AsyncHttpServer(config, new RequestHandlerRegistry(), Executors.newWorkStealingPool(10));
             httpServer.register("/", HttpMethod.GET, (HttpRequest request) -> new ResponseEntity<>("This is good", HttpStatus.SUCCESS));
             httpServer.register("/better", HttpMethod.GET, (HttpRequest request) -> new ResponseEntity<>("This is better", HttpStatus.SUCCESS));
             httpServer.register("/best", HttpMethod.GET, (HttpRequest request) -> new ResponseEntity<>("This is the best", HttpStatus.SUCCESS));

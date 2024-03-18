@@ -5,16 +5,19 @@ import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 public class AsyncHttpServer {
 
     private final ServerConfig config;
     private final RequestHandlerRegistry registry;
+    private final ExecutorService executorService;
 
-    public AsyncHttpServer(ServerConfig config, RequestHandlerRegistry registry) {
+    public AsyncHttpServer(ServerConfig config, RequestHandlerRegistry registry, ExecutorService executorService) {
         this.config = config;
         this.registry = registry;
+        this.executorService = executorService;
     }
 
     public void start() throws InterruptedException, IOException {
@@ -23,7 +26,7 @@ public class AsyncHttpServer {
             @Override
             public void completed(AsynchronousSocketChannel channel, Object attachment) {
                 asyncServer.accept(null, this);
-                new RequestExecutor(channel, registry).execute();
+                executorService.execute(new RequestExecutor(channel, registry, executorService));
             }
 
             @Override
