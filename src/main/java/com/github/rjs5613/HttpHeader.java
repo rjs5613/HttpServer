@@ -5,15 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class HttpHeader {
-
-    private final String name;
-    private final Set<String> values;
-
-    private HttpHeader(String name, Set<String> values) {
-        this.name = name;
-        this.values = values;
-    }
+public record HttpHeader(String name, Set<String> values) {
 
     public static HttpHeader from(String headerString) {
         String[] split = headerString.split(":");
@@ -23,22 +15,6 @@ public class HttpHeader {
 
     public static HttpHeader of(String name, String... value) {
         return new HttpHeader(name, Set.of(value));
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public Set<String> values() {
-        return values;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "name='" + name + '\'' +
-                ", values=" + values +
-                '}';
     }
 
     @Override
